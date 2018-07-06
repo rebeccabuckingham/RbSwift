@@ -77,7 +77,7 @@ public class IO {
     ///   - fd: A file descriptor.
     ///   - mode: A string mode.
     /// - Returns: An IO stream.
-    public class func new(_ fd: Int, mode: String = "r", closure: ((Void) -> ())? = nil) -> IO {
+  public class func new(_ fd: Int, mode: String = "r", closure: (() -> ())? = nil) -> IO {
         let io = IO(file: fdopen(Int32(fd), mode))
         if let closure = closure {
             defer { io.close() }
