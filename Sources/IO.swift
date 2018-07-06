@@ -77,7 +77,7 @@ public class IO {
     ///   - fd: A file descriptor.
     ///   - mode: A string mode.
     /// - Returns: An IO stream.
-  public class func new(_ fd: Int, mode: String = "r", closure: (() -> ())? = nil) -> IO {
+    public class func new(_ fd: Int, mode: String = "r", closure: ((Void) -> ())? = nil) -> IO {
         let io = IO(file: fdopen(Int32(fd), mode))
         if let closure = closure {
             defer { io.close() }
@@ -237,8 +237,8 @@ public class IO {
     /// - Returns: A string value or nil.
     @discardableResult
     public func gets(_ sep: String? = "\n") -> String? {
-        guard let sep = sep?.first else { return read() }
-        if sep == "\n" {
+        guard sep != nil else { return read() }
+        if sep! == "\n" {
             let buffer = [CChar](repeating: 0, count: 1024)
             guard let _ = fgets(UnsafeMutablePointer(mutating: buffer), buffer.count.to_i32, file) else { return nil }
             lineno += 1
@@ -251,7 +251,7 @@ public class IO {
                 guard let char = getc else { break }
                 if char == "\n" { lineno += 1 }
                 buffer.append(char)
-                if char == String(sep) { break }
+                if char == sep { break }
             }
             return buffer
         }
